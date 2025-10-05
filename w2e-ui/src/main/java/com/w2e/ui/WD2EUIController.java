@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 
 //@Slf4J
 public class WD2EUIController {
-    private ObservableList<File> fileNames = FXCollections.observableArrayList();
-    private StringProperty docPathTxtProp = new SimpleStringProperty("");
+    private final ObservableList<File> fileNames = FXCollections.observableArrayList();
+    private final StringProperty pathToExcelProp = new SimpleStringProperty("");
 
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -78,20 +78,7 @@ public class WD2EUIController {
 
     @FXML
     public void convertButtonPressed(MouseEvent mouseEvent) {
-        //Show popup window
-        // Create an Alert object with AlertType.INFORMATION
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-
-        // Set the title of the alert dialog
-        alert.setTitle("Confirm converting");
-
-        // Set the header text (optional)
-        alert.setHeaderText("Are you sure you want to convert the following list of word documents ?");
-
-        // Set the content text (the main message)
-        alert.setContentText(fileNames.stream().map(File::getName).collect(Collectors.joining("\n")) + "\n The documents will e converted to: " + docPathTxtProp.getValue());
-
-        boolean isPathToExcelBlank = StringUtils.isAllBlank(docPathTxtProp.getValue());
+        boolean isPathToExcelBlank = StringUtils.isAllBlank(pathToExcelProp.getValue());
         boolean isListOfWDBlank = CollectionUtils.isEmpty(fileNames);
 
         if(isPathToExcelBlank || isListOfWDBlank) {
@@ -102,21 +89,29 @@ public class WD2EUIController {
                 contentText = "The path to excel document and the list of documents are not defined";
             }
 
-            warningAlert.setContentText( contentText);
+            warningAlert.setContentText(contentText);
             warningAlert.show();
             return;
         }
 
-        // Display the alert and wait for the user to close it
-        Optional<ButtonType> buttonType = alert.showAndWait();
-        if(ButtonType.OK == buttonType.get() ) {
+        //Show popup window
+        // Create an Alert object with AlertType.INFORMATION
+        Alert confirmationDlg = new Alert(Alert.AlertType.CONFIRMATION);
 
-            //TODO: Add actual logic here
-            //TODO: Validate if the list of documents is not empty
-            //TODO: Validate if excel file has been selected
-            new DocDevCLI().convertDocToExcel(fileNames.stream().map(File::getAbsolutePath).toList(), docPathTxtProp.getValue());
+        // Set the title of the confirmationDlg dialog
+        confirmationDlg.setTitle("Confirm converting");
+
+        // Set the header text (optional)
+        confirmationDlg.setHeaderText("Are you sure you want to convert the following list of word documents ?");
+
+        // Set the content text (the main message)
+        confirmationDlg.setContentText(fileNames.stream().map(File::getName).collect(Collectors.joining("\n")) + "\n The documents will be converted to: " + pathToExcelProp.getValue());
+
+        // Display the confirmationDlg and wait for the user to close it
+        Optional<ButtonType> buttonType = confirmationDlg.showAndWait();
+        if(ButtonType.OK == buttonType.orElseThrow() ) {
+            new DocDevCLI().convertDocToExcel(fileNames.stream().map(File::getAbsolutePath).toList(), pathToExcelProp.getValue());
         }
-
 
     }
 
@@ -172,7 +167,7 @@ public class WD2EUIController {
         sourceWrdDocListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         sourceWrdDocListView.setItems(fileNames);
 
-        tgtDocTxt.textProperty().bindBidirectional(docPathTxtProp);
+        tgtDocTxt.textProperty().bindBidirectional(pathToExcelProp);
 
     }
 
