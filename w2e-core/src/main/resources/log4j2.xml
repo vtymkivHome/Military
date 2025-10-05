@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="log-path">logs</Property>
+        <Property name="log-pattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="file-name">convert_doc_to_excel</Property>
+    </Properties>
+<Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+        <PatternLayout pattern="${log-pattern}" />
+    </Console>
+    <RollingFile name="Logfile"
+                 fileName="${log-path}/${file-name}.log"
+                 filePattern="${log-path}/${file-name}_${date:yyyy-MM-dd}-%i.log"
+                 immediateFlush="false" append="true">
+        <PatternLayout pattern="${log-pattern}"/>
+        <Policies>
+            <SizeBasedTriggeringPolicy size="1000KB" />
+        </Policies>
+        <DefaultRolloverStrategy max="4"/>
+    </RollingFile>
+</Appenders>
+<Loggers>
+    <Root level="debug">
+        <AppenderRef ref="Console" />
+        <AppenderRef ref="Logfile"/>
+    </Root>
+</Loggers>
+</Configuration>

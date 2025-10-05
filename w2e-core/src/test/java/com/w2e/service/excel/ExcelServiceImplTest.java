@@ -1,0 +1,54 @@
+package com.w2e.service.excel;
+
+import com.w2e.model.DocTableCell;
+import com.w2e.model.DocTableRow;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+class ExcelServiceImplTest {
+
+    @Test
+    void writeToExcel() {
+        List<DocTableRow> docTableRowList = getDocTableRows();
+        String pathToExcelFile = "src/test/resources/output_data/test.xlsx";
+        Map<Integer, Integer> mapRowToColumn = getMappingDocCellToExcelCell();
+        ExcelService excelService = ExcelServiceImpl.builder()
+                .mapDocCellToExcelCel(mapRowToColumn)
+                .build();
+        excelService.deleteRows(pathToExcelFile, 3, -1);
+        excelService.writeToExcel(pathToExcelFile, docTableRowList);
+    }
+
+    private Map<Integer, Integer> getMappingDocCellToExcelCell() {
+        Map<Integer, Integer> mapDocCellToExcelCell = HashMap.newHashMap(2);
+        mapDocCellToExcelCell.put(0, 0);
+        mapDocCellToExcelCell.put(1, 1);
+        return mapDocCellToExcelCell;
+    }
+
+    private List<DocTableRow> getDocTableRows() {
+        List<DocTableRow> docTableRowList = new ArrayList<>();
+        int maxRowNum = 4;
+        for (int rowNum = 0; rowNum < maxRowNum; rowNum++) {
+            int maxCellNum = 3;
+            List<DocTableCell> cellList = new ArrayList<>(maxCellNum);
+            for (int cellPos = 0; cellPos < maxCellNum; cellPos++) {
+                DocTableCell docTableCell = DocTableCell.builder()
+                        .cellPos(cellPos)
+                        .text(String.format("Row num: %s Cell num: %s", rowNum, cellPos))
+                        .build();
+                cellList.add(docTableCell);
+            }
+            docTableRowList.add(DocTableRow.builder()
+                    .rowNum(rowNum)
+                    .cellList(cellList)
+                    .build());
+        }
+
+        return docTableRowList;
+    }
+}
