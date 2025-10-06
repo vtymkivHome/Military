@@ -43,9 +43,6 @@ public class ExcelServiceImpl implements ExcelService {
                 rowNum = ROW_SHIFT;
             }
 
-            //Row row = sheet.createRow(++rowNum);
-            //List<DocTableRow> sortedDocTableRowList = docTableRowList.stream().sorted(Comparator.comparing(DocTableRow::getRowNum)).toList();
-
             for (DocTableRow docTableRow : docTableRowList) {
                 Row row = sheet.createRow(rowNum++);
                 for(DocTableCell docTableCell : docTableRow.getCellList()) {

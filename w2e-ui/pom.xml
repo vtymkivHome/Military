@@ -11,13 +11,10 @@
     <packaging>jar</packaging>
 
     <name>w2e-ui</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
-        <lombok.version>1.18.36</lombok.version>
         <java.fx.version>21</java.fx.version>
     </properties>
 
@@ -56,11 +53,6 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
         </dependency>
 
         <dependency>

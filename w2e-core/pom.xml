@@ -16,7 +16,6 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
 
         <poi.version>5.2.3</poi.version>
         <main.class>com.document.DocDevCLI</main.class>

@@ -58,7 +58,7 @@ public class DocxServiceImpl implements DocxService {
                             .cellList(docTableCellList)
                             .build());
                 }
-                log.info("rows in table: {}", docTableRowList);
+                log.info("Rows in table: {}", docTableRowList.size());
 
             }
 

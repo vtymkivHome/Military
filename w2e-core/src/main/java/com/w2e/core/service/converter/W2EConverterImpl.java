@@ -6,6 +6,7 @@ import com.w2e.core.service.excel.ExcelService;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @Builder
 @ToString
 @Getter
+@Slf4j
 public class W2EConverterImpl implements  W2EConverter {
     private DocxService docxService;
     private ExcelService excelService;
@@ -29,7 +31,9 @@ public class W2EConverterImpl implements  W2EConverter {
     @Override
     public void convert( List<String> docPathList, String pathToExcel ) {
         for (String docPath: docPathList) {
+            log.info("Converting document {} into {}...", docPath, pathToExcel);
             convert(docPath, pathToExcel);
+            log.info("Converting document {} is done.", docPath);
         }
     }
 }

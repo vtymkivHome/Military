@@ -45,7 +45,6 @@ public class WD2EUIController {
     @FXML // fx:id="tgtDocTxt"
     private TextField tgtDocTxt; // Value injected by FXMLLoader
 
-
     @FXML
     private Button cancelBtn;
 
@@ -105,12 +104,15 @@ public class WD2EUIController {
         confirmationDlg.setHeaderText("Are you sure you want to convert the following list of word documents ?");
 
         // Set the content text (the main message)
-        confirmationDlg.setContentText(fileNames.stream().map(File::getName).collect(Collectors.joining("\n")) + "\n The documents will be converted to: " + pathToExcelProp.getValue());
+        String msgListOffDocs = fileNames.stream().map(File::getName).collect(Collectors.joining("\n"));
+        String contentMsg = "The following documents:\n" + msgListOffDocs + "\nwill be converted into " + pathToExcelProp.getValue();
+        confirmationDlg.setContentText( contentMsg );
 
         // Display the confirmationDlg and wait for the user to close it
         Optional<ButtonType> buttonType = confirmationDlg.showAndWait();
         if(ButtonType.OK == buttonType.orElseThrow() ) {
             new DocDevCLI().convertDocToExcel(fileNames.stream().map(File::getAbsolutePath).toList(), pathToExcelProp.getValue());
+            fileNames.clear();
         }
 
     }
