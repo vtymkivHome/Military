@@ -105,7 +105,7 @@ public class WD2EUIController {
 
         // Set the content text (the main message)
         String msgListOffDocs = fileNames.stream().map(File::getName).collect(Collectors.joining("\n"));
-        String contentMsg = "The following documents:\n" + msgListOffDocs + "\nwill be converted into " + pathToExcelProp.getValue();
+        String contentMsg = "The following documents:\n\n" + msgListOffDocs + "\nwill be converted into:\n" + pathToExcelProp.getValue();
         confirmationDlg.setContentText( contentMsg );
 
         // Display the confirmationDlg and wait for the user to close it
