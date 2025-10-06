@@ -36,8 +36,8 @@
 
     <lombok.version>1.18.36</lombok.version>
     <junit.version>5.10.2</junit.version>
-    <slf4j.version>2.0.13</slf4j.version>
-    <log4j2.version>2.17.2</log4j2.version>
+    <slf4j.version>2.0.17</slf4j.version>
+    <log4j2.version>2.25.2</log4j2.version>
     <commons-collections4.vesrion>4.4</commons-collections4.vesrion>
     <commons-lang3.version>3.18.0</commons-lang3.version>
   </properties>
@@ -84,6 +84,19 @@
         <artifactId>log4j-slf4j-impl</artifactId>
         <version>${log4j2.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+    <!--  <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>-->
+
       <!--End of Log4j2 dependency-->
 
       <dependency>
@@ -103,12 +116,6 @@
         <artifactId>commons-collections4</artifactId>
         <version>${commons-collections4.vesrion}</version>
         <scope>compile</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
       </dependency>
 
     </dependencies>
@@ -143,6 +150,17 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!--<dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+-->
     <!--End of Log4j2 dependency-->
 
     <dependency>
@@ -158,11 +176,6 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
 
   </dependencies>
