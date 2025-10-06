@@ -41,7 +41,6 @@ public class DocxServiceImpl implements DocxService {
                 // excel columns
                 int numberOfRows = table.getNumberOfRows();
                 int shift_rows = 3;
-                //int numOfCells = table.get
                 for(int rowNum = shift_rows; rowNum < numberOfRows; rowNum++) {
                     XWPFTableRow row = table.getRow(rowNum);
                     int cellSize = row.getTableCells().size();
