@@ -51,7 +51,7 @@
 
     </dependencies>
     <build>
-        <finalName>wd2excel</finalName>
+        <finalName>w2e-core</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>

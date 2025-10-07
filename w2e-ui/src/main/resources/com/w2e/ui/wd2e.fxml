@@ -11,14 +11,14 @@
    <children>
       <Pane prefHeight="462.0" prefWidth="543.0">
          <children>
-            <ListView fx:id="sourceWrdDocListView" layoutX="14.0" layoutY="36.0" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="198.0" prefWidth="509.0" />
-            <Label layoutX="73.0" layoutY="248.0" text="Target document" />
-            <TextField fx:id="tgtDocTxt" layoutX="172.0" layoutY="240.0" onDragDropped="#onDragExcelDropped" onDragOver="#onDragExcelOver" prefHeight="32.0" prefWidth="199.0" />
+            <ListView fx:id="sourceWrdDocListView" layoutX="14.0" layoutY="36.0" onDragDropped="#onDragDocDropped" onDragOver="#onDragDocOver" prefHeight="198.0" prefWidth="509.0" />
+            <Label layoutX="19.0" layoutY="248.0" text="Target document" />
+            <TextField fx:id="tgtDocTxt" layoutX="120.0" layoutY="240.0" onDragDropped="#onDragExcelDropped" onDragOver="#onDragExcelOver" prefHeight="32.0" prefWidth="278.0" />
             <Button layoutX="120.0" layoutY="283.0" mnemonicParsing="false" onMouseClicked="#convertButtonPressed" prefHeight="26.0" prefWidth="118.0" text="Convert" />
             <Label layoutX="14.0" layoutY="6.0" prefHeight="17.0" prefWidth="81.0" text="Document list" />
             <Button id="cancelBtn" fx:id="cancelBtn" layoutX="251.0" layoutY="283.0" mnemonicParsing="false" onAction="#cancelButtonPressed" prefHeight="26.0" prefWidth="68.0" text="Cancel" />
             <Button id="browseDocumentsBtn" fx:id="browseDocsBtn" layoutX="108.0" layoutY="2.0" mnemonicParsing="false" onAction="#selectDocuments" text="Browse documents..." />
-            <Button id="selectExcelBtn" fx:id="selectExcelBtn" layoutX="391.0" layoutY="243.0" mnemonicParsing="false" onAction="#selectExcelFile" prefHeight="26.0" prefWidth="118.0" text="Select  excel.." />
+            <Button id="selectExcelBtn" fx:id="selectExcelBtn" layoutX="405.0" layoutY="243.0" mnemonicParsing="false" onAction="#selectExcelFile" prefHeight="26.0" prefWidth="118.0" text="Select  excel.." />
             <ProgressBar id="convertingDocsProgress" fx:id="fxConvertingDocsProgress" layoutX="19.0" layoutY="367.0" prefHeight="32.0" prefWidth="499.0" progress="0.0" />
             <Label layoutX="19.0" layoutY="342.0" text="Converting:" />
             <Label id="docNameLbl" fx:id="fxDocNameLbl" layoutX="95.0" layoutY="342.0" prefHeight="17.0" prefWidth="421.0" />

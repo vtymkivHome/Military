@@ -63,6 +63,7 @@
     </dependencies>
 
     <build>
+        <finalName>w2e-ui</finalName>
         <plugins>
             <!--Urban jar-->
             <plugin>

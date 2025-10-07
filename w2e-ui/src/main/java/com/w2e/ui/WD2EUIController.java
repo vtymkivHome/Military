@@ -11,10 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.collections4.CollectionUtils;
@@ -57,7 +54,7 @@ public class WD2EUIController {
     @FXML
     private Button selectExcelBtn;
 
-    @FXML
+    /*@FXML
     void onDragDropped(DragEvent event) {
         Dragboard db = event.getDragboard();
         boolean success = false;
@@ -77,7 +74,7 @@ public class WD2EUIController {
         }
         event.consume(); // Consume the event to prevent propagation
     }
-
+*/
     @FXML
     public void convertButtonPressed(MouseEvent mouseEvent) {
         boolean isPathToExcelBlank = StringUtils.isAllBlank(pathToExcelProp.getValue());
@@ -226,23 +223,99 @@ public class WD2EUIController {
     public void onDragExcelDropped(DragEvent dragEvent) {
         Dragboard db = dragEvent.getDragboard();
         boolean success = false;
+        // Process the dropped content only if it meets the criteria
         if (db.hasFiles()) {
-            List<File> files = db.getFiles();
-            updateTargetDoc(files.get(0));
-            success = true;
+            boolean allFilesAreAccepted = db.getFiles().stream()
+                    .allMatch(file -> file.getName().endsWith(".xlsx"));
+            if (allFilesAreAccepted) {
+                List<File> docFileLst = db.getFiles();
+                System.out.println("Dropped files: " + docFileLst);
+                pathToExcelProp.set(docFileLst.getFirst().getAbsolutePath());
+                success = true;
+            }
         }
+
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
     }
 
     public void onDragExcelOver(DragEvent dragEvent) {
-        if (dragEvent.getDragboard().hasFiles()) {
-            dragEvent.acceptTransferModes(TransferMode.COPY);
+        Dragboard db = dragEvent.getDragboard();
+        // Filter based on the content of the Dragboard
+        if (db.hasFiles()) {
+            // Filter based on file extensions
+            boolean allFilesAreAccepted = db.getFiles().stream()
+                    .allMatch(file -> file.getName().endsWith(".xlsx") );
+            if (allFilesAreAccepted) {
+                dragEvent.acceptTransferModes(TransferMode.COPY);
+            }
         }
-        dragEvent.consume(); // Consume the event to prevent propagation
+        dragEvent.consume();  // Consume the event to prevent propagation
     }
 
     private void updateTargetDoc(File file) {
         pathToExcelProp.set(file.getAbsolutePath());
     }
+
+    @FXML
+    public void onDragDocDropped(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        boolean success = false;
+        // Process the dropped content only if it meets the criteria
+        if (db.hasFiles()) {
+            boolean allFilesAreAccepted = db.getFiles().stream()
+                    .allMatch(file -> file.getName().endsWith(".docx"));
+            if (allFilesAreAccepted) {
+                List<File> docFileLst = db.getFiles();
+                System.out.println("Dropped files: " + docFileLst);
+                updateListView(docFileLst);
+                success = true;
+            }
+        }
+
+        dragEvent.setDropCompleted(success);
+        dragEvent.consume();
+    }
+
+    @FXML
+    public void onDragDocOver(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        // Filter based on the content of the Dragboard
+        if (db.hasFiles()) {
+            // Filter based on file extensions
+            boolean allFilesAreAccepted = db.getFiles().stream()
+                    .allMatch(file -> file.getName().endsWith(".docx") );
+            if (allFilesAreAccepted) {
+                dragEvent.acceptTransferModes(TransferMode.COPY);
+            }
+        }
+        dragEvent.consume();  // Consume the event to prevent propagation
+    }
+
+    /*public void onDragExcelDetected(MouseEvent mouseEvent) {
+        Dragboard db = sourceWrdDocListView.startDragAndDrop(TransferMode.ANY);
+        ClipboardContent content = new ClipboardContent();
+
+        // Add data to the Dragboard based on what you want to allow to be dragged
+        if (sourceWrdDocListView.getUserData() instanceof String userData) {
+            if(userData.endsWith("xlsx")) {
+                content.putString(userData);
+            }
+        } else if (sourceWrdDocListView.getUserData() instanceof File file) {
+            // Example: Only allow certain file types to be dragged
+            if (file.getName().endsWith(".xlsx")) {
+                content.putFiles(java.util.Collections.singletonList(file));
+            } else {
+                // If the file type is not allowed, don't start the drag
+                mouseEvent.consume();
+                return;
+            }
+        }
+        db.setContent(content);
+        mouseEvent.consume();
+    }
+
+    public void onDragDocumentsDetected(MouseEvent mouseEvent) {
+
+    }*/
 }
