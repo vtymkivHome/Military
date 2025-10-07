@@ -40,6 +40,17 @@ public class DocDevCLI {
                  .build();
          w2EConverter.convert(docPathList, pathToExcel);
      }
+   public void convertDocToExcel(String docPath, String pathToExcel) {
+        ExcelService excelService = ExcelServiceImpl.builder()
+                .mapDocCellToExcelCel(getMappingDocCellToExcelCell())
+                .build();
+
+        W2EConverter w2EConverter = W2EConverterImpl.builder()
+                 .docxService(DocxServiceImpl.builder().build())
+                 .excelService(excelService)
+                 .build();
+         w2EConverter.convert(docPath, pathToExcel);
+     }
 
     private Map<Integer, Integer> getMappingDocCellToExcelCell() {
         // TODO: Define mapping in config file

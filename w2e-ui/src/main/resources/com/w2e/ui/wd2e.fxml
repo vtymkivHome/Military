@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="386.0" prefWidth="533.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.w2e.ui.WD2EUIController">
+<VBox alignment="CENTER" prefHeight="472.0" prefWidth="583.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.w2e.ui.WD2EUIController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <children>
-      <Pane prefHeight="613.0" prefWidth="440.0">
+      <Pane prefHeight="462.0" prefWidth="543.0">
          <children>
-            <ListView fx:id="sourceWrdDocListView" layoutX="14.0" layoutY="36.0" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="198.0" prefWidth="433.0" />
-            <Label layoutX="20.0" layoutY="247.0" text="Target document" />
-            <TextField fx:id="tgtDocTxt" layoutX="121.0" layoutY="242.0" prefHeight="32.0" prefWidth="199.0" />
+            <ListView fx:id="sourceWrdDocListView" layoutX="14.0" layoutY="36.0" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="198.0" prefWidth="509.0" />
+            <Label layoutX="73.0" layoutY="248.0" text="Target document" />
+            <TextField fx:id="tgtDocTxt" layoutX="172.0" layoutY="240.0" onDragDropped="#onDragExcelDropped" onDragOver="#onDragExcelOver" prefHeight="32.0" prefWidth="199.0" />
             <Button layoutX="120.0" layoutY="283.0" mnemonicParsing="false" onMouseClicked="#convertButtonPressed" prefHeight="26.0" prefWidth="118.0" text="Convert" />
             <Label layoutX="14.0" layoutY="6.0" prefHeight="17.0" prefWidth="81.0" text="Document list" />
             <Button id="cancelBtn" fx:id="cancelBtn" layoutX="251.0" layoutY="283.0" mnemonicParsing="false" onAction="#cancelButtonPressed" prefHeight="26.0" prefWidth="68.0" text="Cancel" />
             <Button id="browseDocumentsBtn" fx:id="browseDocsBtn" layoutX="108.0" layoutY="2.0" mnemonicParsing="false" onAction="#selectDocuments" text="Browse documents..." />
-            <Button id="selectExcelBtn" fx:id="selectExcelBtn" layoutX="329.0" layoutY="242.0" mnemonicParsing="false" onAction="#selectExcelFile" prefHeight="26.0" prefWidth="118.0" text="Select  excel.." />
+            <Button id="selectExcelBtn" fx:id="selectExcelBtn" layoutX="391.0" layoutY="243.0" mnemonicParsing="false" onAction="#selectExcelFile" prefHeight="26.0" prefWidth="118.0" text="Select  excel.." />
+            <ProgressBar id="convertingDocsProgress" fx:id="fxConvertingDocsProgress" layoutX="19.0" layoutY="367.0" prefHeight="32.0" prefWidth="499.0" progress="0.0" />
+            <Label layoutX="19.0" layoutY="342.0" text="Converting:" />
+            <Label id="docNameLbl" fx:id="fxDocNameLbl" layoutX="95.0" layoutY="342.0" prefHeight="17.0" prefWidth="421.0" />
          </children>
       </Pane>
    </children>

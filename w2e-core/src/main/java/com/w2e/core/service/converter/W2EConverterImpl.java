@@ -25,15 +25,15 @@ public class W2EConverterImpl implements  W2EConverter {
         List<DocTableRow> sortedDocRowList = docRowLst.stream()
                 .sorted(Comparator.comparing(DocTableRow::getRowNum))
                 .toList();
+        log.info("Converting document {} into {}...", docPath, pathToExcel);
         excelService.writeToExcel(pathToExcel, sortedDocRowList);
+        log.info("Converting document {} is done.", docPath);
     }
 
     @Override
     public void convert( List<String> docPathList, String pathToExcel ) {
         for (String docPath: docPathList) {
-            log.info("Converting document {} into {}...", docPath, pathToExcel);
             convert(docPath, pathToExcel);
-            log.info("Converting document {} is done.", docPath);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.w2e.ui;
 
 import com.w2e.ui.cell.DocListCell;
 import com.w2e.core.DocDevCLI;
+import com.w2e.ui.task.ConvertFileTask;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
 public class WD2EUIController {
     private final ObservableList<File> fileNames = FXCollections.observableArrayList();
     private final StringProperty pathToExcelProp = new SimpleStringProperty("");
+    public ProgressBar fxConvertingDocsProgress;
+    public Label fxDocNameLbl;
 
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -111,10 +114,37 @@ public class WD2EUIController {
         // Display the confirmationDlg and wait for the user to close it
         Optional<ButtonType> buttonType = confirmationDlg.showAndWait();
         if(ButtonType.OK == buttonType.orElseThrow() ) {
-            new DocDevCLI().convertDocToExcel(fileNames.stream().map(File::getAbsolutePath).toList(), pathToExcelProp.getValue());
-            fileNames.clear();
+            convertDocToExcel();
         }
 
+    }
+
+    private void convertDocToExcel() {
+        List<File> docFilesToConvert = fileNames.stream().toList();
+        String excelFileToConvertTo = pathToExcelProp.getValue();
+        ConvertFileTask convertFilesTask = new ConvertFileTask(docFilesToConvert, excelFileToConvertTo);
+        fxConvertingDocsProgress.progressProperty().bind(convertFilesTask.progressProperty());
+
+        // Optional: Bind a Label to show progress message
+        // Label statusLabel = new Label();
+         fxDocNameLbl.textProperty().bind(convertFilesTask.messageProperty());
+        //new DocDevCLI().convertDocToExcel(fileNames.stream().map(File::getAbsolutePath).toList(), pathToExcelProp.getValue());
+        //fileNames.clear();
+        convertFilesTask.setOnSucceeded(event -> {
+            System.out.println("Converting finished successfully!");
+            fileNames.removeAll(docFilesToConvert);
+            // Unbind the progress property when done
+            fxConvertingDocsProgress.progressProperty().unbind();
+        });
+
+        convertFilesTask.setOnFailed(event -> {
+            System.err.println("Converting failed: " + convertFilesTask.getException().getMessage());
+            fxConvertingDocsProgress.progressProperty().unbind();
+        });
+
+        Thread thread = new Thread(convertFilesTask);
+        thread.setDaemon(true); // Allow the application to exit even if this thread is running
+        thread.start();
     }
 
     public void cancelButtonPressed(ActionEvent actionEvent) {
@@ -191,5 +221,28 @@ public class WD2EUIController {
             }
             fileNames.addAll(docListToAdd);
         }
+    }
+
+    public void onDragExcelDropped(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        boolean success = false;
+        if (db.hasFiles()) {
+            List<File> files = db.getFiles();
+            updateTargetDoc(files.get(0));
+            success = true;
+        }
+        dragEvent.setDropCompleted(success);
+        dragEvent.consume();
+    }
+
+    public void onDragExcelOver(DragEvent dragEvent) {
+        if (dragEvent.getDragboard().hasFiles()) {
+            dragEvent.acceptTransferModes(TransferMode.COPY);
+        }
+        dragEvent.consume(); // Consume the event to prevent propagation
+    }
+
+    private void updateTargetDoc(File file) {
+        pathToExcelProp.set(file.getAbsolutePath());
     }
 }
