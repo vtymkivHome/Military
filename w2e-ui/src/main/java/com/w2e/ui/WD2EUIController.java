@@ -1,7 +1,6 @@
 package com.w2e.ui;
 
 import com.w2e.ui.cell.DocListCell;
-import com.w2e.core.DocDevCLI;
 import com.w2e.ui.task.ConvertFileTask;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -11,14 +10,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +34,8 @@ public class WD2EUIController {
     public ProgressBar fxConvertingDocsProgress;
     public Label fxDocNameLbl;
 
-
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
-
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
 
     @FXML // fx:id="sourceWrdDocListView"
     private ListView<File> sourceWrdDocListView; // Value injected by FXMLLoader
@@ -54,42 +52,23 @@ public class WD2EUIController {
     @FXML
     private Button selectExcelBtn;
 
-    /*@FXML
-    void onDragDropped(DragEvent event) {
-        Dragboard db = event.getDragboard();
-        boolean success = false;
-        if (db.hasFiles()) {
-            List<File> files = db.getFiles();
-            updateListView(files);
-            success = true;
-        }
-        event.setDropCompleted(success);
-        event.consume();
-    }
-
-    @FXML
-    void onDragOver(DragEvent event) {
-        if (event.getDragboard().hasFiles()) {
-            event.acceptTransferModes(TransferMode.COPY);
-        }
-        event.consume(); // Consume the event to prevent propagation
-    }
-*/
     @FXML
     public void convertButtonPressed(MouseEvent mouseEvent) {
+
         boolean isPathToExcelBlank = StringUtils.isAllBlank(pathToExcelProp.getValue());
         boolean isListOfWDBlank = CollectionUtils.isEmpty(fileNames);
 
         if(isPathToExcelBlank || isListOfWDBlank) {
             Alert warningAlert = new Alert(Alert.AlertType.WARNING);
 
-            String contentText = isPathToExcelBlank ? "The path to excel document is not define." : "The list of documents is not populated.";
+            String contentText = isPathToExcelBlank ? "The path to excel document is not defined." : "The list of documents is not populated.";
             if(isPathToExcelBlank && isListOfWDBlank) {
                 contentText = "The path to excel document and the list of documents are not defined";
             }
 
             warningAlert.setContentText(contentText);
             warningAlert.show();
+            mouseEvent.consume();
             return;
         }
 
@@ -105,7 +84,7 @@ public class WD2EUIController {
 
         // Set the content text (the main message)
         String msgListOffDocs = fileNames.stream().map(File::getName).collect(Collectors.joining("\n"));
-        String contentMsg = "The following documents:\n\n" + msgListOffDocs + "\nwill be converted into:\n" + pathToExcelProp.getValue();
+        String contentMsg = "The following documents:\n\n" + msgListOffDocs + "\n\nwill be converted into: " + pathToExcelProp.getValue();
         confirmationDlg.setContentText( contentMsg );
 
         // Display the confirmationDlg and wait for the user to close it
@@ -198,6 +177,14 @@ public class WD2EUIController {
 
         tgtDocTxt.textProperty().bindBidirectional(pathToExcelProp);
 
+        Tooltip styledTooltip = new Tooltip();
+        styledTooltip.textProperty().bindBidirectional(pathToExcelProp);
+        styledTooltip.setFont(new Font("Arial", 14));
+        styledTooltip.setStyle("-fx-background-color: lightblue; -fx-text-fill: darkblue;");
+        tgtDocTxt.setTooltip(styledTooltip);
+        //styledButton.setTooltip(styledTooltip);
+
+
     }
 
     private void updateListView(List<File> docFileList) {
@@ -251,10 +238,6 @@ public class WD2EUIController {
             }
         }
         dragEvent.consume();  // Consume the event to prevent propagation
-    }
-
-    private void updateTargetDoc(File file) {
-        pathToExcelProp.set(file.getAbsolutePath());
     }
 
     @FXML

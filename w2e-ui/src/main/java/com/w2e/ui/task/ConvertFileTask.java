@@ -2,10 +2,8 @@ package com.w2e.ui.task;
 
 import com.w2e.core.DocDevCLI;
 import javafx.concurrent.Task;
-    import java.io.File;
-    import java.io.FileInputStream;
-    import java.io.FileOutputStream;
-    import java.io.IOException;
+
+import java.io.File;
 import java.util.List;
 
 public class ConvertFileTask extends Task<Void> {
@@ -21,21 +19,20 @@ public class ConvertFileTask extends Task<Void> {
         protected Void call() {
             long allFilesCount = sourceFileList.size();
             long totalFilesConverted = 0;
-            File currentFile = null;
+            String fileName = "";
             DocDevCLI docDevCLI = new DocDevCLI();
             try {
                 for (File file : sourceFileList) {
-                    updateMessage(file.getAbsolutePath());
-                    currentFile = file;
+                    fileName = file.getName();
+                    updateMessage(fileName);
                     // Convert
-                    docDevCLI.convertDocToExcel(currentFile.getAbsolutePath(), destinationFile);
+                    docDevCLI.convertDocToExcel(file.getAbsolutePath(), destinationFile);
                     totalFilesConverted++;
                     updateProgress(totalFilesConverted, allFilesCount);
-                    //updateValue(currentFile);
 
                 }
             }  catch (Exception e) {
-                String errMsg = String.format("Error during converting file %s: %s", currentFile.getName(), e.getMessage());
+                String errMsg = String.format("Error during converting file %s: %s", fileName, e.getMessage());
                 updateMessage(errMsg);
                 throw new IllegalArgumentException(errMsg); // Re-throw to handle in onFailed
             }
