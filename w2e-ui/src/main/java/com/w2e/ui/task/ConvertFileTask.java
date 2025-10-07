@@ -24,11 +24,12 @@ public class ConvertFileTask extends Task<Void> {
             File currentFile = null;
             DocDevCLI docDevCLI = new DocDevCLI();
             try {
-                for (File file : sourceFileList.stream().toList()) {
+                for (File file : sourceFileList) {
+                    updateMessage(file.getAbsolutePath());
                     currentFile = file;
                     // Convert
                     docDevCLI.convertDocToExcel(currentFile.getAbsolutePath(), destinationFile);
-                    totalFilesConverted += 1;
+                    totalFilesConverted++;
                     updateProgress(totalFilesConverted, allFilesCount);
                     //updateValue(currentFile);
 
