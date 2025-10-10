@@ -14,9 +14,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-
 
 @Slf4j
 @AllArgsConstructor
@@ -27,41 +28,61 @@ public class ExcelServiceImpl implements ExcelService {
     // Key is document row cell, value is excel row cell
     private Map<Integer, Integer> mapDocCellToExcelCel;
 
-
     @Override
     public void writeToExcel(String pathToExcelFile, List<DocTableRow> docTableRowList) {
         try (FileInputStream fis = new FileInputStream(pathToExcelFile);
              XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
 
-            Sheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
-
-            Row formatRow = sheet.getRow(sheet.getFirstRowNum());
-
-            int rowNum = sheet.getLastRowNum();
-
-            if (rowNum < ROW_SHIFT) {
-                rowNum = ROW_SHIFT;
-            }
-
-            for (DocTableRow docTableRow : docTableRowList) {
-                Row row = sheet.createRow(rowNum++);
-                for(DocTableCell docTableCell : docTableRow.getCellList()) {
-                    if(mapDocCellToExcelCel.containsKey(docTableCell.getCellPos())) {
-                        Integer excelCellPos = mapDocCellToExcelCel.get(docTableCell.getCellPos());
-                        Cell cell = row.createCell(excelCellPos);
-                        cell.setCellStyle(formatRow.getCell(excelCellPos).getCellStyle());
-                        cell.setCellValue(docTableCell.getText());
-                    }
-                }
-            }
-
-            cleanUpEmptyRows(sheet, ROW_SHIFT);
-            saveWorkBook(workbook, pathToExcelFile);
+            writeWorkbook(pathToExcelFile, docTableRowList, workbook);
 
         } catch (Exception ex) {
             log.error("", ex);
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public void writeToExcelByTemplate(List<DocTableRow> docTableRowList, String pathToExcelTemplateFile, String pathToExcelOutputFile) {
+        // Check if template file exists
+        if (!Files.exists(Path.of(pathToExcelTemplateFile))) {
+            throw new IllegalArgumentException("Template file for excel does not exist: " + pathToExcelTemplateFile);
+        }
+        // Read template file
+        try (FileInputStream fis = new FileInputStream(pathToExcelTemplateFile);
+             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+            writeWorkbook(pathToExcelOutputFile, docTableRowList, workbook);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // Check if excel output file exist. If not then create it based on template.
+    }
+
+    private void writeWorkbook(String pathToExcelFile, List<DocTableRow> docTableRowList, XSSFWorkbook workbook) throws IOException {
+        Sheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
+
+        Row formatRow = sheet.getRow(sheet.getFirstRowNum());
+
+        int rowNum = sheet.getLastRowNum();
+
+        if (rowNum < ROW_SHIFT) {
+            rowNum = ROW_SHIFT;
+        }
+
+        for (DocTableRow docTableRow : docTableRowList) {
+            Row row = sheet.createRow(rowNum++);
+            for (DocTableCell docTableCell : docTableRow.getCellList()) {
+                if (mapDocCellToExcelCel.containsKey(docTableCell.getCellPos())) {
+                    Integer excelCellPos = mapDocCellToExcelCel.get(docTableCell.getCellPos());
+                    Cell cell = row.createCell(excelCellPos);
+                    cell.setCellStyle(formatRow.getCell(excelCellPos).getCellStyle());
+                    cell.setCellValue(docTableCell.getText());
+                }
+            }
+        }
+
+        cleanUpEmptyRows(sheet, ROW_SHIFT);
+        saveWorkBook(workbook, pathToExcelFile);
     }
 
     @Override
@@ -80,9 +101,6 @@ public class ExcelServiceImpl implements ExcelService {
                 if (rowToDelete != null) {
                     sheet.removeRow(rowToDelete);
                 }
-                /*if (rowIndexToDelete >= startRow && rowIndexToDelete < lastRowNum) {
-                    sheet.shiftRows(rowIndexToDelete + 1, lastRowNum, -1);
-                }*/
             }
             cleanUpEmptyRows(sheet, startRow);
             saveWorkBook(workbook, pathToExcelFile);

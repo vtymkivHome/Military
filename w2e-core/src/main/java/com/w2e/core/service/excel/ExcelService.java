@@ -6,5 +6,8 @@ import java.util.List;
 
 public interface ExcelService {
     void writeToExcel(String pathToExcelFile, List<DocTableRow> docTableRowList);
+
+    void writeToExcelByTemplate(List<DocTableRow> docTableRowList, String pathToExcelTemplateFile, String pathToExcelOutputFile);
+
     void deleteRows(String pathToExcelFile, int startRow, int endRow);
 }

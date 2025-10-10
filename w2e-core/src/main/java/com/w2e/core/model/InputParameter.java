@@ -13,5 +13,7 @@ public class InputParameter {
     private String pathToDoc;
     @NonNull
     private  String pathToExcel;
+    @NonNull
+    private String pathToTemplate;
 
 }

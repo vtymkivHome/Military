@@ -3,7 +3,7 @@ package com.w2e.core;
 import com.w2e.core.model.InputParameter;
 import com.w2e.core.service.converter.W2EConverter;
 import com.w2e.core.service.converter.W2EConverterImpl;
-import com.w2e.core.service.docx.DocxServiceImpl;
+import com.w2e.core.service.docx.DocxServiceConvColToRowsImpl;
 import com.w2e.core.service.excel.ExcelService;
 import com.w2e.core.service.excel.ExcelServiceImpl;
 import com.w2e.core.service.parameter.ParameterException;
@@ -22,7 +22,7 @@ public class DocDevCLI {
     public void run(String[] args) {
         InputParameter inputParameter;
         try {
-            inputParameter = ParameterServiceImpl.builder().build().loadInputParameter(args);
+            inputParameter = ParameterServiceImpl.builder().build().loadInputParameter(args, () -> "templates/journal_template.xlsx");
         } catch (ParameterException e) {
             throw new RuntimeException(e);
         }
@@ -35,7 +35,7 @@ public class DocDevCLI {
                 .build();
 
         W2EConverter w2EConverter = W2EConverterImpl.builder()
-                 .docxService(DocxServiceImpl.builder().build())
+                .docxService(DocxServiceConvColToRowsImpl.builder().build())
                  .excelService(excelService)
                  .build();
          w2EConverter.convert(docPathList, pathToExcel);
@@ -46,7 +46,7 @@ public class DocDevCLI {
                 .build();
 
         W2EConverter w2EConverter = W2EConverterImpl.builder()
-                 .docxService(DocxServiceImpl.builder().build())
+                .docxService(DocxServiceConvColToRowsImpl.builder().build())
                  .excelService(excelService)
                  .build();
          w2EConverter.convert(docPath, pathToExcel);

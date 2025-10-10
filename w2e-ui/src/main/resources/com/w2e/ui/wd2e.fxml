@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<VBox alignment="CENTER" prefHeight="472.0" prefWidth="583.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.w2e.ui.WD2EUIController">
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="472.0" prefWidth="583.0" spacing="20.0"
+      xmlns="http://javafx.com/javafx/25" fx:controller="com.w2e.ui.WD2EUIController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -21,7 +22,8 @@
             <Button id="selectExcelBtn" fx:id="selectExcelBtn" layoutX="405.0" layoutY="243.0" mnemonicParsing="false" onAction="#selectExcelFile" prefHeight="26.0" prefWidth="118.0" text="Select  excel.." />
             <ProgressBar id="convertingDocsProgress" fx:id="fxConvertingDocsProgress" layoutX="19.0" layoutY="367.0" prefHeight="32.0" prefWidth="499.0" progress="0.0" />
             <Label layoutX="19.0" layoutY="342.0" text="Converting:" />
-            <Label id="docNameLbl" fx:id="fxDocNameLbl" layoutX="95.0" layoutY="342.0" prefHeight="17.0" prefWidth="421.0" />
+            <Label id="docNameLbl" fx:id="fxDocNameLbl" layoutX="95.0" layoutY="333.0" prefHeight="26.0"
+                   prefWidth="421.0"/>
          </children>
       </Pane>
    </children>
