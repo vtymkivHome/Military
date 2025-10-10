@@ -61,16 +61,19 @@ public class ExcelServiceImpl implements ExcelService {
     private void writeWorkbook(String pathToExcelFile, List<DocTableRow> docTableRowList, XSSFWorkbook workbook) throws IOException {
         Sheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
 
-        Row formatRow = sheet.getRow(sheet.getFirstRowNum());
 
-        int rowNum = sheet.getLastRowNum();
+        int rowNum = sheet.getLastRowNum() + 1;
 
         if (rowNum < ROW_SHIFT) {
             rowNum = ROW_SHIFT;
         }
 
+        Row formatRow = sheet.getRow(ROW_SHIFT - 1);
+        Cell formatCellA = formatRow.getCell(0);
+
         for (DocTableRow docTableRow : docTableRowList) {
             Row row = sheet.createRow(rowNum++);
+
             for (DocTableCell docTableCell : docTableRow.getCellList()) {
                 if (mapDocCellToExcelCel.containsKey(docTableCell.getCellPos())) {
                     Integer excelCellPos = mapDocCellToExcelCel.get(docTableCell.getCellPos());
@@ -81,6 +84,13 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
 
+        int numRows = 1;
+        for (int rowPos = ROW_SHIFT; rowPos <= sheet.getLastRowNum(); rowPos++) {
+            Row row = sheet.getRow(rowPos);
+            Cell cell = row.createCell(0, formatCellA.getCellType());
+            cell.setCellStyle(formatCellA.getCellStyle());
+            cell.setCellValue(numRows++);
+        }
         cleanUpEmptyRows(sheet, ROW_SHIFT);
         saveWorkBook(workbook, pathToExcelFile);
     }
