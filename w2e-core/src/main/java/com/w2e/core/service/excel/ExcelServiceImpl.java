@@ -84,15 +84,22 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
 
+        autoIncrementCell(sheet, formatCellA);
+        cleanUpEmptyRows(sheet, ROW_SHIFT);
+        saveWorkBook(workbook, pathToExcelFile);
+    }
+
+    private void autoIncrementCell(Sheet sheet, Cell formatCellA) {
         int numRows = 1;
         for (int rowPos = ROW_SHIFT; rowPos <= sheet.getLastRowNum(); rowPos++) {
             Row row = sheet.getRow(rowPos);
+            if (isRowEmpty(row)) {
+                continue;
+            }
             Cell cell = row.createCell(0, formatCellA.getCellType());
             cell.setCellStyle(formatCellA.getCellStyle());
             cell.setCellValue(numRows++);
         }
-        cleanUpEmptyRows(sheet, ROW_SHIFT);
-        saveWorkBook(workbook, pathToExcelFile);
     }
 
     @Override
