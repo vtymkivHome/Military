@@ -3,7 +3,7 @@ package com.w2e.core;
 import com.w2e.core.model.InputParameter;
 import com.w2e.core.service.converter.W2EConverter;
 import com.w2e.core.service.converter.W2EConverterImpl;
-import com.w2e.core.service.docx.DocxServiceConvColToRowsImpl;
+import com.w2e.core.service.docx.TransposeColsToRow;
 import com.w2e.core.service.excel.ExcelService;
 import com.w2e.core.service.excel.ExcelServiceImpl;
 import com.w2e.core.service.parameter.ParameterException;
@@ -35,7 +35,7 @@ public class DocDevCLI {
                 .build();
 
         W2EConverter w2EConverter = W2EConverterImpl.builder()
-                .docxService(DocxServiceConvColToRowsImpl.builder().build())
+                .docxService(TransposeColsToRow.builder().build())
                  .excelService(excelService)
                  .build();
          w2EConverter.convert(docPathList, pathToExcel);
@@ -46,7 +46,7 @@ public class DocDevCLI {
                 .build();
 
         W2EConverter w2EConverter = W2EConverterImpl.builder()
-                .docxService(DocxServiceConvColToRowsImpl.builder().build())
+                .docxService(TransposeColsToRow.builder().build())
                  .excelService(excelService)
                  .build();
          w2EConverter.convert(docPath, pathToExcel);

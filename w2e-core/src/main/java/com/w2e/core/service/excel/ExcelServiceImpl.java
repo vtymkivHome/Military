@@ -61,7 +61,6 @@ public class ExcelServiceImpl implements ExcelService {
     private void writeWorkbook(String pathToExcelFile, List<DocTableRow> docTableRowList, XSSFWorkbook workbook) throws IOException {
         Sheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
 
-
         int rowNum = sheet.getLastRowNum() + 1;
 
         if (rowNum < ROW_SHIFT) {
@@ -93,7 +92,7 @@ public class ExcelServiceImpl implements ExcelService {
         int numRows = 1;
         for (int rowPos = ROW_SHIFT; rowPos <= sheet.getLastRowNum(); rowPos++) {
             Row row = sheet.getRow(rowPos);
-            if (isRowEmpty(row)) {
+            if (isEmptyRow(row)) {
                 continue;
             }
             Cell cell = row.createCell(0, formatCellA.getCellType());
@@ -138,7 +137,7 @@ public class ExcelServiceImpl implements ExcelService {
             Row currentRow = sheet.getRow(i);
             Row nextRow = sheet.getRow(i + 1);
 
-            if (isRowEmpty(currentRow) && isRowEmpty(nextRow)) {
+            if (isEmptyRow(currentRow) && isEmptyRow(nextRow)) {
                 // Delete the empty row by shifting subsequent rows up
                 sheet.shiftRows(i + 1, sheet.getLastRowNum(), -1);
                 i--; // Decrement i because the next row now occupies the current index
@@ -146,7 +145,7 @@ public class ExcelServiceImpl implements ExcelService {
         }
     }
 
-    private boolean isRowEmpty(Row row)  {
+    private boolean isEmptyRow(Row row) {
         if(row == null) {
             return true;
         }
