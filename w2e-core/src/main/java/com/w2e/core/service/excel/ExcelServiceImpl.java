@@ -1,5 +1,6 @@
 package com.w2e.core.service.excel;
 
+import com.w2e.core.config.CoreConfig;
 import com.w2e.core.model.DocTableCell;
 import com.w2e.core.model.DocTableRow;
 import lombok.AllArgsConstructor;
@@ -24,12 +25,15 @@ import java.util.Map;
 @Builder
 public class ExcelServiceImpl implements ExcelService {
     //TODO: This should e. specified in config file
-    private final int ROW_SHIFT = 3;
+    private CoreConfig config;
+
+    //private final int ROW_SHIFT = 3;
     // Key is document row cell, value is excel row cell
     private Map<Integer, Integer> mapDocCellToExcelCel;
 
     @Override
     public void writeToExcel(String pathToExcelFile, List<DocTableRow> docTableRowList) {
+
         try (FileInputStream fis = new FileInputStream(pathToExcelFile);
              XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
 
@@ -60,22 +64,24 @@ public class ExcelServiceImpl implements ExcelService {
 
     private void writeWorkbook(String pathToExcelFile, List<DocTableRow> docTableRowList, XSSFWorkbook workbook) throws IOException {
         Sheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
+        int shiftRows = config.getExcelDoc().getShiftRows();
+        Map<Integer, Integer> docCellToExcelCellMap = config.getDocCellToExcelCellMap();
 
         int rowNum = sheet.getLastRowNum() + 1;
 
-        if (rowNum < ROW_SHIFT) {
-            rowNum = ROW_SHIFT;
+        if (rowNum < shiftRows) {
+            rowNum = shiftRows;
         }
 
-        Row formatRow = sheet.getRow(ROW_SHIFT - 1);
+        Row formatRow = sheet.getRow(shiftRows - 1);
         Cell formatCellA = formatRow.getCell(0);
 
         for (DocTableRow docTableRow : docTableRowList) {
             Row row = sheet.createRow(rowNum++);
 
             for (DocTableCell docTableCell : docTableRow.getCellList()) {
-                if (mapDocCellToExcelCel.containsKey(docTableCell.getCellPos())) {
-                    Integer excelCellPos = mapDocCellToExcelCel.get(docTableCell.getCellPos());
+                if (docCellToExcelCellMap.containsKey(docTableCell.getCellPos())) {
+                    Integer excelCellPos = docCellToExcelCellMap.get(docTableCell.getCellPos());
                     Cell cell = row.createCell(excelCellPos);
                     cell.setCellStyle(formatRow.getCell(excelCellPos).getCellStyle());
                     cell.setCellValue(docTableCell.getText());
@@ -83,21 +89,23 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
 
-        autoIncrementCell(sheet, formatCellA);
-        cleanUpEmptyRows(sheet, ROW_SHIFT);
+        autoIncrementCell(sheet, formatCellA, shiftRows);
+        cleanUpEmptyRows(sheet, shiftRows);
         saveWorkBook(workbook, pathToExcelFile);
     }
 
-    private void autoIncrementCell(Sheet sheet, Cell formatCellA) {
-        int numRows = 1;
-        for (int rowPos = ROW_SHIFT; rowPos <= sheet.getLastRowNum(); rowPos++) {
+    private void autoIncrementCell(Sheet sheet, Cell formatCellA, int shiftRows) {
+        // TODO: Move to config
+        int autoIncrementId = 1;
+        int autoIncrementCellPos = 0;
+        for (int rowPos = shiftRows; rowPos <= sheet.getLastRowNum(); rowPos++) {
             Row row = sheet.getRow(rowPos);
             if (isEmptyRow(row)) {
                 continue;
             }
-            Cell cell = row.createCell(0, formatCellA.getCellType());
+            Cell cell = row.createCell(autoIncrementCellPos, formatCellA.getCellType());
             cell.setCellStyle(formatCellA.getCellStyle());
-            cell.setCellValue(numRows++);
+            cell.setCellValue(autoIncrementId++);
         }
     }
 

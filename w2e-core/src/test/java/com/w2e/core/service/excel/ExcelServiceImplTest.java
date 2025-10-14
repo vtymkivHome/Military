@@ -1,7 +1,9 @@
 package com.w2e.core.service.excel;
 
+import com.w2e.core.config.CoreConfig;
 import com.w2e.core.model.DocTableCell;
 import com.w2e.core.model.DocTableRow;
+import com.w2e.core.service.config.ConfigLoaderImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,8 +17,11 @@ class ExcelServiceImplTest {
     void writeToExcel() {
         List<DocTableRow> docTableRowList = getDocTableRows();
         String pathToExcelFile = "src/test/resources/output_data/test.xlsx";
+        String pathToConfig = "src/test/resources/config/w2e.yml";
+
         Map<Integer, Integer> mapRowToColumn = getMappingDocCellToExcelCell();
         ExcelService excelService = ExcelServiceImpl.builder()
+                .config(ConfigLoaderImpl.builder().build().loadConfiguration(pathToConfig, CoreConfig.class))
                 .mapDocCellToExcelCel(mapRowToColumn)
                 .build();
         excelService.deleteRows(pathToExcelFile, 3, -1);

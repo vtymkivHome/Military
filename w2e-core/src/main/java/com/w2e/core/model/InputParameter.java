@@ -15,5 +15,6 @@ public class InputParameter {
     private  String pathToExcel;
     @NonNull
     private String pathToTemplate;
-
+    @NonNull
+    private String configFilePath;
 }

@@ -1,6 +1,7 @@
 package com.w2e.core.service.docx;
 
 
+import com.w2e.core.config.CoreConfig;
 import com.w2e.core.model.DocTableCell;
 import com.w2e.core.model.DocTableRow;
 import lombok.Builder;
@@ -20,17 +21,21 @@ import java.util.List;
 @Slf4j
 @Builder
 public class DocxServiceImpl implements DocxService {
+    private CoreConfig config;
 
     @Override
     public List<DocTableRow> readDocument(String pathToDocument) {
+        int shift_rows = config.getExcelDoc().getShiftRows();
         List<DocTableRow> docTableRowList = new ArrayList<>();
+
         try (InputStream is = Files.newInputStream(Paths.get(pathToDocument));
              XWPFDocument doc = new XWPFDocument(is)) {
             List<XWPFTable> tables = doc.getTables();
 
             if (tables.isEmpty()) {
-                log.error("No tables found in the document.");
-                throw new RuntimeException("No tables found in the document.");
+                String errMsg = String.format("No tables found in the document [%s].", pathToDocument);
+                log.error(errMsg);
+                throw new RuntimeException(errMsg);
             }
 
             for (int i = 0; i < tables.size(); i++) {
@@ -40,7 +45,7 @@ public class DocxServiceImpl implements DocxService {
                 // Read sequentially number of rows that would be converted into
                 // excel columns
                 int numberOfRows = table.getNumberOfRows();
-                int shift_rows = 3;
+
                 for(int rowNum = shift_rows; rowNum < numberOfRows; rowNum++) {
                     XWPFTableRow row = table.getRow(rowNum);
                     int cellSize = row.getTableCells().size();

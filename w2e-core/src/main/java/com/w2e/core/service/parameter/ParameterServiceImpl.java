@@ -2,6 +2,7 @@ package com.w2e.core.service.parameter;
 
 
 import com.w2e.core.model.InputParameter;
+import com.w2e.core.model.W2ESysProp;
 import lombok.Builder;
 
 import java.util.function.Supplier;
@@ -32,10 +33,13 @@ public class ParameterServiceImpl implements ParameterService<InputParameter> {
         pathToExcel = ofNullable(pathToExcel).orElseThrow(() -> new ParameterException("The parameter --pathToExcel has not been set"));
 
         pathToTemplate = ofNullable(pathToTemplate).orElseGet(defaultPathToExcelTemplate);
+
+        String pathToConfig = W2ESysProp.CONFIG_FILE_PATH.getPath();
         return InputParameter.builder()
                 .pathToDoc(pathToDoc)
                 .pathToExcel(pathToExcel)
                 .pathToTemplate(pathToTemplate)
+                .configFilePath(pathToConfig)
                 .build();
     }
 

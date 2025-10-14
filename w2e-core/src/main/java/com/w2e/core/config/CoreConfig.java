@@ -5,12 +5,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Data
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true, allowGetters = true)
 public class CoreConfig {
+    @JsonProperty("excelDoc")
+    private ExcelDoc excelDoc;
+
     @JsonProperty("wordDoc")
     private WordDoc wordDoc;
+
+    @JsonProperty("docCellToExcelCell")
+    private List<ExcelDoc.DocCellToExcelCell> docCellToExcelCellList;
+
+    public Map<Integer, Integer> getDocCellToExcelCellMap() {
+        return getDocCellToExcelCellList().stream().collect(Collectors.toMap(ExcelDoc.DocCellToExcelCell::getFromCell, ExcelDoc.DocCellToExcelCell::getToCell));
+    }
 
     @Data
     public static class WordDoc {
@@ -43,5 +57,18 @@ public class CoreConfig {
         }
     }
 
+    @Data
+    public static class ExcelDoc {
+        @JsonProperty("shiftRows")
+        private int shiftRows;
 
+        @Data
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class DocCellToExcelCell {
+            @JsonProperty("fromCell")
+            private int fromCell;
+            @JsonProperty("toCell")
+            private int toCell;
+        }
+    }
 }

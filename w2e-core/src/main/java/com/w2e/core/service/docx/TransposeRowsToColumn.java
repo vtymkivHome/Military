@@ -1,6 +1,7 @@
 package com.w2e.core.service.docx;
 
 
+import com.w2e.core.config.CoreConfig;
 import com.w2e.core.model.DocRow;
 import com.w2e.core.model.DocTableCell;
 import com.w2e.core.model.DocTableRow;
@@ -20,12 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This will convert word. document tale column to a row
+ * This will convert word document table rows to a one row with
+ * amount of columns that corresponds ot the amount of rows from converting word document
  */
 @Slf4j
 @Builder
-public class TransposeColsToRow implements DocxService {
-    private int columnDataRange;
+public class TransposeRowsToColumn implements DocxService {
+    private CoreConfig config;
 
     @Override
     public <T extends DocRow> List<T> readDocument(String pathToDocument) {
@@ -66,8 +68,10 @@ public class TransposeColsToRow implements DocxService {
     private List<DocTableRow> transposeColRangeToRow(XWPFTable table) {
         List<DocTableRow> docTableRowList = new ArrayList<>();
         int numberOfRows = table.getNumberOfRows();
-        int cellToReadPos = 1;
-        columnDataRange = 6;
+        int cellToReadPos = config.getWordDoc().getColData().getColPos();
+        int rowStartPos = config.getWordDoc().getColData().getColRange().getRowStartPos();
+        int rowEndPos = config.getWordDoc().getColData().getColRange().getRowEndPos();
+        int columnDataRange = rowEndPos - rowStartPos;
 
         // Specific number of rows in document will become
         // column in destination excel file
@@ -109,14 +113,16 @@ public class TransposeColsToRow implements DocxService {
     }
 
     private boolean isEmptyRow(XWPFTableRow row) {
+        boolean isEmpty = true;
         if (row == null) {
-            return true;
+            return isEmpty;
         }
         for (XWPFTableCell cell : row.getTableCells()) {
+            // If at least one cell is not empty the row is not empty
             if (cell != null && StringUtils.isNotEmpty(cell.getText())) {
-                return false;
+                return !isEmpty;
             }
         }
-        return true;
+        return isEmpty;
     }
 }

@@ -1,6 +1,5 @@
 package com.w2e.core.config;
 
-import com.w2e.core.service.config.ConfigLoader;
 import com.w2e.core.service.config.ConfigLoaderImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,7 @@ class CoreConfigTest {
 
     @BeforeEach
     void setUp() {
-        ConfigLoader configLoader = new ConfigLoaderImpl();
-        coreConfig = configLoader.loadConfiguration(pathToConfig, CoreConfig.class);
+        coreConfig = ConfigLoaderImpl.builder().build().loadConfiguration(pathToConfig, CoreConfig.class);
     }
 
     @Test

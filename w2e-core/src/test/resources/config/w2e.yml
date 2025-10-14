@@ -2,6 +2,9 @@
 # It means that column with pos colPos for row started at position rowStartPos till row at position
 # rowEndPos would be converted into the row with columns that match the row pos. row(pos) -> col(pos)
 
+excelDoc:
+  shiftRows: 3
+
 wordDoc:
   colData:
     colPos: 1
@@ -11,9 +14,8 @@ wordDoc:
     transposed:
       cellStartPosInRow: 1 # To what cell start transpose data from cells in document
 
----
 # Mapping transposed document rows into the Excel rows
-docToExcelMap:
+docCellToExcelCell:
   - fromCell: 0
     toCell: 0
   - fromCell: 1

@@ -9,10 +9,13 @@ import java.util.List;
 public class ConvertFileTask extends Task<Void> {
         private final List<File> sourceFileList;
         private final String destinationFile;
+    private final String pathToConfig;
 
-        public ConvertFileTask(List<File> sourceFileList, String destinationFile) {
+    public ConvertFileTask(List<File> sourceFileList, String destinationFile, String pathToConfig) {
             this.sourceFileList = sourceFileList;
             this.destinationFile = destinationFile;
+        this.pathToConfig = pathToConfig;
+
         }
 
         @Override
@@ -26,7 +29,7 @@ public class ConvertFileTask extends Task<Void> {
                     fileName = file.getName();
                     updateMessage(fileName);
                     // Convert
-                    docDevCLI.convertDocToExcel(file.getAbsolutePath(), destinationFile);
+                    docDevCLI.convertDocToExcel(file.getAbsolutePath(), destinationFile, pathToConfig);
                     totalFilesConverted++;
                     updateProgress(totalFilesConverted, allFilesCount);
 

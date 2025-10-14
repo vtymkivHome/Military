@@ -1,5 +1,6 @@
 package com.w2e.ui;
 
+import com.w2e.core.model.W2ESysProp;
 import com.w2e.ui.cell.DocListCell;
 import com.w2e.ui.task.ConvertFileTask;
 import javafx.beans.property.SimpleStringProperty;
@@ -98,14 +99,13 @@ public class WD2EUIController {
     private void convertDocToExcel() {
         List<File> docFilesToConvert = fileNames.stream().toList();
         String excelFileToConvertTo = pathToExcelProp.getValue();
-        ConvertFileTask convertFilesTask = new ConvertFileTask(docFilesToConvert, excelFileToConvertTo);
+        String pathToConfig = W2ESysProp.CONFIG_FILE_PATH.getPath();
+        ConvertFileTask convertFilesTask = new ConvertFileTask(docFilesToConvert, excelFileToConvertTo, pathToConfig);
         fxConvertingDocsProgress.progressProperty().bind(convertFilesTask.progressProperty());
 
         // Optional: Bind a Label to show progress message
         // Label statusLabel = new Label();
          fxDocNameLbl.textProperty().bind(convertFilesTask.messageProperty());
-        //new DocDevCLI().convertDocToExcel(fileNames.stream().map(File::getAbsolutePath).toList(), pathToExcelProp.getValue());
-        //fileNames.clear();
         convertFilesTask.setOnSucceeded(event -> {
             System.out.println("Converting finished successfully!");
             fileNames.removeAll(docFilesToConvert);

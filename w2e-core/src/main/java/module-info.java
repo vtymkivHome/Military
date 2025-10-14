@@ -8,4 +8,5 @@ module w2e.core {
     requires com.fasterxml.jackson.databind;
     exports com.w2e.core;
     exports com.w2e.core.config;
+    exports com.w2e.core.model;
 }
