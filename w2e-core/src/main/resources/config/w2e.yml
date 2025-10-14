@@ -1,0 +1,34 @@
+#Configuration for transposing columns to rows
+# It means that column with pos colPos for row started at position rowStartPos till row at position
+# rowEndPos would be converted into the row with columns that match the row pos. row(pos) -> col(pos)
+
+wordDoc:
+  colData:
+    colPos: 1
+    colRange:
+      rowStartPos: 0 # row starts  at pos 0(0 means first row in doc table)
+      rowEndPos: 6
+    transposed:
+      cellStartPosInRow: 1 # To what cell start transpose data from cells in document
+
+---
+# Mapping transposed document rows into the Excel rows
+docToExcelMap:
+  - fromCell: 0
+    toCell: 0
+  - fromCell: 1
+    toCell: 1
+  - fromCell: 2
+    toCell: 2
+  - fromCell: 3
+    toCell: 3
+  - fromCell: 4
+    toCell: 4
+  - fromCell: 5
+    toCell: 5
+  - fromCell: 6
+    toCell: 6
+  - fromCell: 7
+    toCell: 7
+
+

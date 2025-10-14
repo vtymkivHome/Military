@@ -40,6 +40,7 @@
     <log4j2.version>2.18.0</log4j2.version>
     <commons-collections4.vesrion>4.4</commons-collections4.vesrion>
     <commons-lang3.version>3.18.0</commons-lang3.version>
+    <fasterxml.jackson.version>2.17.0</fasterxml.jackson.version>
   </properties>
 
   <dependencyManagement>
@@ -106,6 +107,19 @@
         <scope>compile</scope>
       </dependency>
 
+      <!--Yaml-->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${fasterxml.jackson.version}</version> <!-- Use a recent version compatible with Java 21 -->
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${fasterxml.jackson.version}</version> <!-- Use the same version as jackson-databind -->
+      </dependency>
+      <!--End of Yaml-->
     </dependencies>
   </dependencyManagement>
 
@@ -155,6 +169,17 @@
       <artifactId>lombok</artifactId>
     </dependency>
 
+    <!--Yaml-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+    </dependency>
+    <!--End of Yaml-->
   </dependencies>
 
   <build>
