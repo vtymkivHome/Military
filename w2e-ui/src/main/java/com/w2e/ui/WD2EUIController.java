@@ -165,11 +165,11 @@ public class WD2EUIController {
 
     @FXML
     void initialize() {
-        assert browseDocsBtn != null : "fx:id=\"browseDocsBtn\" was not injected: check your FXML file 'wd2e.fxml'.";
-        assert cancelBtn != null : "fx:id=\"cancelBtn\" was not injected: check your FXML file 'wd2e.fxml'.";
-        assert selectExcelBtn != null : "fx:id=\"selectExcelBtn\" was not injected: check your FXML file 'wd2e.fxml'.";
-        assert sourceWrdDocListView != null : "fx:id=\"sourceWrdDocListView\" was not injected: check your FXML file 'wd2e.fxml'.";
-        assert tgtDocTxt != null : "fx:id=\"tgtDocTxt\" was not injected: check your FXML file 'wd2e.fxml'.";
+        assert browseDocsBtn != null : "fx:id=\"browseDocsBtn\" was not injected: check your FXML file 'w2e.fxml'.";
+        assert cancelBtn != null : "fx:id=\"cancelBtn\" was not injected: check your FXML file 'w2e.fxml'.";
+        assert selectExcelBtn != null : "fx:id=\"selectExcelBtn\" was not injected: check your FXML file 'w2e.fxml'.";
+        assert sourceWrdDocListView != null : "fx:id=\"sourceWrdDocListView\" was not injected: check your FXML file 'w2e.fxml'.";
+        assert tgtDocTxt != null : "fx:id=\"tgtDocTxt\" was not injected: check your FXML file 'w2e.fxml'.";
 
         sourceWrdDocListView.setCellFactory( lv -> new DocListCell());
         sourceWrdDocListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);

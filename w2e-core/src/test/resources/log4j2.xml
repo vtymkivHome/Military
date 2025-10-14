@@ -9,7 +9,7 @@
     <Console name="Console" target="SYSTEM_OUT">
         <PatternLayout pattern="${log-pattern}" />
     </Console>
-    <RollingFile name="Logfile"
+    <RollingFile name="LogFile"
                  fileName="${log-path}/${file-name}.log"
                  filePattern="${log-path}/${file-name}_${date:yyyy-MM-dd}-%i.log"
                  immediateFlush="false" append="true">
@@ -21,9 +21,13 @@
     </RollingFile>
 </Appenders>
 <Loggers>
-    <Root level="debug">
+    <Logger name="com.w2e.core" level="DEBUG" additivity="false">
+        <AppenderRef ref="LogFile"/>
+        <AppenderRef ref="Console"/>
+    </Logger>
+
+    <!--<Root level="debug">
         <AppenderRef ref="Console" />
-        <AppenderRef ref="Logfile"/>
-    </Root>
+    </Root>-->
 </Loggers>
 </Configuration>
