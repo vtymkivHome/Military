@@ -3,6 +3,7 @@ package com.w2e.core.service.excel;
 import com.w2e.core.config.CoreConfig;
 import com.w2e.core.model.DocTableCell;
 import com.w2e.core.model.DocTableRow;
+import com.w2e.core.model.W2ESysProp;
 import com.w2e.core.service.config.ConfigLoaderImpl;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ class ExcelServiceImplTest {
     void writeToExcel() {
         List<DocTableRow> docTableRowList = getDocTableRows();
         String pathToExcelFile = "src/test/resources/output_data/test.xlsx";
-        String pathToConfig = "src/test/resources/config/w2e.yml";
+        String pathToConfig = W2ESysProp.CONFIG_FILE_PATH.getDefaultPath();
 
         Map<Integer, Integer> mapRowToColumn = getMappingDocCellToExcelCell();
         ExcelService excelService = ExcelServiceImpl.builder()
