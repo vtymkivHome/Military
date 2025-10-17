@@ -33,33 +33,43 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Override
     public void writeToExcel(String pathToExcelFile, List<DocTableRow> docTableRowList) {
-
-        try (FileInputStream fis = new FileInputStream(pathToExcelFile);
-             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
-
-            writeWorkbook(pathToExcelFile, docTableRowList, workbook);
-
+        XSSFWorkbook workbook;
+        try (FileInputStream fis = new FileInputStream(pathToExcelFile)) {
+            workbook = new XSSFWorkbook(fis);
         } catch (Exception ex) {
-            log.error("", ex);
-            throw new RuntimeException(ex);
+            String errMsg = String.format("Exception happened when reading excel file [%s]", pathToExcelFile);
+            log.error(errMsg, ex);
+            throw new RuntimeException(errMsg, ex);
+        }
+
+        try {
+            writeWorkbook(pathToExcelFile, docTableRowList, workbook);
+        } catch (IOException e) {
+            String errMsg = String.format("Exception happened when when writing to excel file [%s]", pathToExcelFile);
+            log.error(errMsg, e);
+            throw new RuntimeException(errMsg, e);
         }
     }
 
     @Override
     public void writeToExcelByTemplate(List<DocTableRow> docTableRowList, String pathToExcelTemplateFile, String pathToExcelOutputFile) {
+        XSSFWorkbook workbook;
         // Check if template file exists
         if (!Files.exists(Path.of(pathToExcelTemplateFile))) {
             throw new IllegalArgumentException("Template file for excel does not exist: " + pathToExcelTemplateFile);
         }
         // Read template file
-        try (FileInputStream fis = new FileInputStream(pathToExcelTemplateFile);
-             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
-            writeWorkbook(pathToExcelOutputFile, docTableRowList, workbook);
-
+        try (FileInputStream fis = new FileInputStream(pathToExcelTemplateFile)) {
+            workbook = new XSSFWorkbook(fis);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         // Check if excel output file exist. If not then create it based on template.
+        try {
+            writeWorkbook(pathToExcelOutputFile, docTableRowList, workbook);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void writeWorkbook(String pathToExcelFile, List<DocTableRow> docTableRowList, XSSFWorkbook workbook) throws IOException {
