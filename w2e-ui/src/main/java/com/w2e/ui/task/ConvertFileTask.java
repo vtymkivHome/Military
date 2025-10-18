@@ -1,6 +1,6 @@
 package com.w2e.ui.task;
 
-import com.w2e.core.DocDevCLI;
+import com.w2e.core.W2ECLI;
 import javafx.concurrent.Task;
 
 import java.io.File;
@@ -23,7 +23,7 @@ public class ConvertFileTask extends Task<Void> {
             long allFilesCount = sourceFileList.size();
             long totalFilesConverted = 0;
             String fileName = "";
-            DocDevCLI docDevCLI = new DocDevCLI();
+            W2ECLI docDevCLI = new W2ECLI();
             try {
                 for (File file : sourceFileList) {
                     fileName = file.getName();

@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class DocDevCLI {
+public class W2ECLI {
     public static void main(String[] args) {
-        new DocDevCLI().run(args);
+        new W2ECLI().run(args);
     }
 
     public void run(String[] args) {

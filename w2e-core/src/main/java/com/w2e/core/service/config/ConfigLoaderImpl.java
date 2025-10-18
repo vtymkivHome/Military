@@ -40,7 +40,7 @@ public class ConfigLoaderImpl implements ConfigLoader {
             if (pathToConfURL == null) {
                 pathToConfURL = Paths.get(pathToConfig).toUri().toURL();
             }
-            log.info("\n\nPath to conf URL: [{}] \n\n", pathToConfURL);
+            log.debug("\n\nPath to conf URL: [{}] \n\n", pathToConfURL);
             Map<String, Object> mapOfValues = objectMapper.readValue(
                     pathToConfURL
                     , new TypeReference<>() {

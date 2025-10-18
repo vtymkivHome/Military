@@ -54,7 +54,9 @@ public class TransposeRowsToColumn implements DocxService {
 
             List<DocTableRow> docTableRowList = new ArrayList<>();
             for (XWPFTable table : tables) {
+                log.info("\nTransposing table rows of the document [{}]...", pathToDocument);
                 docTableRowList.addAll(transposeColRangeToRow(table));
+                log.info("Transposing table rows of the document [{}] is done.\n", pathToDocument);
             }
             return (List<T>) docTableRowList;
 

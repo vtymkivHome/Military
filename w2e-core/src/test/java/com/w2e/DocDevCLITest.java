@@ -1,17 +1,17 @@
 package com.w2e;
 
 
-import com.w2e.core.DocDevCLI;
+import com.w2e.core.W2ECLI;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class DocDevCLITest {
-    private DocDevCLI docDevCLI;
+    private W2ECLI docDevCLI;
 
     @BeforeEach
     void setUp() {
-        docDevCLI = new DocDevCLI();
+        docDevCLI = new W2ECLI();
     }
 
     @AfterEach
