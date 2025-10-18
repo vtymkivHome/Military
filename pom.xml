@@ -41,6 +41,7 @@
     <commons-collections4.vesrion>4.4</commons-collections4.vesrion>
     <commons-lang3.version>3.18.0</commons-lang3.version>
     <commons-text.version>1.14.0</commons-text.version>
+    <commons-compress.version>1.28.0</commons-compress.version>
     <fasterxml.jackson.version>2.17.0</fasterxml.jackson.version>
   </properties>
 
@@ -87,6 +88,12 @@
         <version>${log4j2.version}</version> <!-- Use a recent stable version -->
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j2.version}</version> <!-- Use a recent stable version -->
+      </dependency>
+
       <!--End of Log4j2 dependency-->
 
       <dependency>
@@ -127,6 +134,12 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>${commons-text.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons-compress.version}</version>
       </dependency>
 
     </dependencies>
@@ -194,6 +207,12 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

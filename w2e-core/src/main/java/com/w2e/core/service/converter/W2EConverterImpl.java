@@ -1,7 +1,7 @@
 package com.w2e.core.service.converter;
 
 import com.w2e.core.model.DocTableRow;
-import com.w2e.core.service.docx.DocxService;
+import com.w2e.core.service.docx.DocReader;
 import com.w2e.core.service.excel.ExcelService;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,13 +15,13 @@ import java.util.List;
 @ToString
 @Getter
 @Slf4j
-public class W2EConverterImpl implements  W2EConverter {
-    private DocxService docxService;
+public class W2EConverterImpl implements W2EConverter {
+    private DocReader docReader;
     private ExcelService excelService;
 
     @Override
     public void convert( String docPath, String pathToExcel ) {
-        List<DocTableRow> docRowLst = docxService.readDocument(docPath);
+        List<DocTableRow> docRowLst = docReader.readDocument(docPath);
         List<DocTableRow> sortedDocRowList = docRowLst.stream()
                 .sorted(Comparator.comparing(DocTableRow::getRowNum))
                 .toList();

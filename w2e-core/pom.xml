@@ -17,8 +17,8 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <poi.version>5.2.3</poi.version>
-        <main.class>com.document.DocDevCLI</main.class>
+        <poi.version>5.4.0</poi.version>
+        <main.class>com.w2e.core.W2ECLI</main.class>
     </properties>
 
     <dependencyManagement>
@@ -35,6 +35,11 @@
                 <version>${poi.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-scratchpad</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -49,6 +54,10 @@
             <artifactId>poi-ooxml</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>w2e-core</finalName>

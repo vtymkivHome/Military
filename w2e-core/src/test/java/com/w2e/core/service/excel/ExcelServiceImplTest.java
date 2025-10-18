@@ -8,9 +8,7 @@ import com.w2e.core.service.config.ConfigLoaderImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class ExcelServiceImplTest {
 
@@ -20,21 +18,13 @@ class ExcelServiceImplTest {
         String pathToExcelFile = "src/test/resources/output_data/test.xlsx";
         String pathToConfig = W2ESysProp.CONFIG_FILE_PATH.getDefaultPath();
 
-        Map<Integer, Integer> mapRowToColumn = getMappingDocCellToExcelCell();
         ExcelService excelService = ExcelServiceImpl.builder()
                 .config(ConfigLoaderImpl.builder().build().loadConfiguration(pathToConfig, CoreConfig.class))
-                .mapDocCellToExcelCel(mapRowToColumn)
                 .build();
         excelService.deleteRows(pathToExcelFile, 3, -1);
         excelService.writeToExcel(pathToExcelFile, docTableRowList);
     }
 
-    private Map<Integer, Integer> getMappingDocCellToExcelCell() {
-        Map<Integer, Integer> mapDocCellToExcelCell = HashMap.newHashMap(2);
-        mapDocCellToExcelCell.put(0, 0);
-        mapDocCellToExcelCell.put(1, 1);
-        return mapDocCellToExcelCell;
-    }
 
     private List<DocTableRow> getDocTableRows() {
         List<DocTableRow> docTableRowList = new ArrayList<>();

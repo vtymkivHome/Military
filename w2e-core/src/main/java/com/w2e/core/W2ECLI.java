@@ -1,11 +1,12 @@
 package com.w2e.core;
 
 import com.w2e.core.config.CoreConfig;
+import com.w2e.core.factory.DocReaderFactory;
 import com.w2e.core.model.InputParameter;
 import com.w2e.core.service.config.ConfigLoaderImpl;
 import com.w2e.core.service.converter.W2EConverter;
 import com.w2e.core.service.converter.W2EConverterImpl;
-import com.w2e.core.service.docx.TransposeRowsToColumn;
+import com.w2e.core.service.docx.DocReader;
 import com.w2e.core.service.excel.ExcelService;
 import com.w2e.core.service.excel.ExcelServiceImpl;
 import com.w2e.core.service.parameter.ParameterException;
@@ -41,15 +42,17 @@ public class W2ECLI {
 
     public void convertDocToExcel(String docPath, String pathToExcel, String pathToConfig) {
         CoreConfig config = ConfigLoaderImpl.builder().build().loadConfiguration(pathToConfig, CoreConfig.class);
+        DocReader docReader = DocReaderFactory.builder()
+                .config(config)
+                .build()
+                .getReader(docPath);
+
         ExcelService excelService = ExcelServiceImpl.builder()
-                .mapDocCellToExcelCel(getMappingDocCellToExcelCell())
                 .config(config)
                 .build();
 
         W2EConverter w2EConverter = W2EConverterImpl.builder()
-                .docxService(TransposeRowsToColumn.builder()
-                        .config(config)
-                        .build())
+                .docReader(docReader)
                 .excelService(excelService)
                 .build();
         w2EConverter.convert(docPath, pathToExcel);

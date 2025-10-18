@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class DocDevCLITest {
+class W2ECLITest {
     private W2ECLI docDevCLI;
 
     @BeforeEach

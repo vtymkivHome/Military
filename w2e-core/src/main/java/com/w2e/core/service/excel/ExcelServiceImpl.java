@@ -27,9 +27,9 @@ public class ExcelServiceImpl implements ExcelService {
     //TODO: This should e. specified in config file
     private CoreConfig config;
 
-    //private final int ROW_SHIFT = 3;
+   /* //private final int ROW_SHIFT = 3;
     // Key is document row cell, value is excel row cell
-    private Map<Integer, Integer> mapDocCellToExcelCel;
+    private Map<Integer, Integer> mapDocCellToExcelCel;*/
 
     @Override
     public void writeToExcel(String pathToExcelFile, List<DocTableRow> docTableRowList) {
@@ -92,9 +92,10 @@ public class ExcelServiceImpl implements ExcelService {
             for (DocTableCell docTableCell : docTableRow.getCellList()) {
                 if (docCellToExcelCellMap.containsKey(docTableCell.getCellPos())) {
                     Integer excelCellPos = docCellToExcelCellMap.get(docTableCell.getCellPos());
-                    Cell cell = row.createCell(excelCellPos);
+                    Cell cell = row.createCell(excelCellPos, CellType.STRING);
                     cell.setCellStyle(formatRow.getCell(excelCellPos).getCellStyle());
-                    cell.setCellValue(docTableCell.getText());
+                    String cellTxt = docTableCell.getText(); //.replace('\u00A0', ' ');
+                    cell.setCellValue(cellTxt);
                 }
             }
         }

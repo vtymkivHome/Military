@@ -1,17 +1,15 @@
 package com.w2e.core.service.docx;
 
-
 import com.w2e.core.config.CoreConfig;
 import com.w2e.core.model.DocRow;
 import com.w2e.core.model.DocTableCell;
 import com.w2e.core.model.DocTableRow;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,13 +18,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This will convert word document table rows to a one row with
- * amount of columns that corresponds ot the amount of rows from converting word document
- */
 @Slf4j
 @Builder
-public class TransposeRowsToColumn implements DocxService {
+public class DocReaderImpl implements DocReader {
+    @NonNull
     private CoreConfig config;
 
     @Override
@@ -37,8 +32,9 @@ public class TransposeRowsToColumn implements DocxService {
         // Could be a map like column idx -> range(7)
 
         try (InputStream is = Files.newInputStream(Path.of(pathToDocument));
-             XWPFDocument doc = new XWPFDocument(is)) {
-            List<XWPFTable> tables = doc.getTables();
+             HWPFDocument doc = new HWPFDocument(is)) {
+
+            List<Table> tables = getTableList(doc);
 
             if (tables.isEmpty()) {
                 String errMsg = String.format("No tables found in the document: [%s].", pathToDocument);
@@ -53,9 +49,9 @@ public class TransposeRowsToColumn implements DocxService {
             }
 
             List<DocTableRow> docTableRowList = new ArrayList<>();
-            for (XWPFTable table : tables) {
+            for (Table table : tables) {
                 log.info("\nTransposing table rows of the document [{}]...", pathToDocument);
-                docTableRowList.addAll(transposeColRangeToRow(table));
+                docTableRowList.addAll(transposeColRangeToRow(pathToDocument, table));
                 log.info("Transposing table rows of the document [{}] is done.\n", pathToDocument);
             }
             return (List<T>) docTableRowList;
@@ -67,9 +63,22 @@ public class TransposeRowsToColumn implements DocxService {
 
     }
 
-    private List<DocTableRow> transposeColRangeToRow(XWPFTable table) {
+    private List<Table> getTableList(HWPFDocument doc) {
+        List<Table> tableList = new ArrayList<>();
+        Range range = doc.getRange();  // getOverallRange() will include headers and footers.
+
+        TableIterator tableIterator = new TableIterator(range);
+        while (tableIterator.hasNext()) {
+            Table table = tableIterator.next();
+            log.debug("=== [Table {}] ===", table.getTableLevel());
+            tableList.add(table);
+        }
+        return tableList;
+    }
+
+    private List<DocTableRow> transposeColRangeToRow(String pathToDoc, Table table) {
         List<DocTableRow> docTableRowList = new ArrayList<>();
-        int numberOfRows = table.getNumberOfRows();
+        int numberOfRows = table.numRows();
         int cellToReadPos = config.getWordDoc().getColData().getColPos();
         int rowStartPos = config.getWordDoc().getColData().getColRange().getRowStartPos();
         int rowEndPos = config.getWordDoc().getColData().getColRange().getRowEndPos();
@@ -84,17 +93,18 @@ public class TransposeRowsToColumn implements DocxService {
         int emptyRowCount = 0;
         // Loop via rows in document
         for (int rowNum = 0; rowNum < numberOfRows; rowNum++) {
-            XWPFTableRow row = table.getRow(rowNum);
+            TableRow row = table.getRow(rowNum);
             if (isEmptyRow(row)) {
                 emptyRowCount++;
                 continue;
             }
             rowIdx++;
             //TODO: Loop via existing cells
-            XWPFTableCell cell = row.getCell(cellToReadPos);
+            TableCell cell = row.getCell(cellToReadPos);
+            String cellTxt = cell.text().trim();
             docTableCellList.add(DocTableCell.builder()
                     .cellPos(destCellStartPos++)
-                    .text(cell.getText())
+                    .text(cellTxt)
                     .build());
 
             if (rowIdx % columnDataRange == 0) {
@@ -108,23 +118,25 @@ public class TransposeRowsToColumn implements DocxService {
 
         }
 
-        log.info("Total rows in original document table: {}", numberOfRows);
-        log.info("Empty rows in original document table: {}", emptyRowCount);
-        log.info("Rows in transposed table: {}", docTableRowList.size());
+        log.info("Total rows in original document [{}] table: {}", pathToDoc, numberOfRows);
+        log.info("Empty rows in original document [{}] table: {}", pathToDoc, emptyRowCount);
+        log.info("Rows in transposed table of the document [{}]: {}", pathToDoc, docTableRowList.size());
         return docTableRowList;
     }
 
-    private boolean isEmptyRow(XWPFTableRow row) {
+    private boolean isEmptyRow(TableRow row) {
         boolean isEmpty = true;
         if (row == null) {
             return isEmpty;
         }
-        for (XWPFTableCell cell : row.getTableCells()) {
-            // If at least one cell is not empty the row is not empty
-            if (cell != null && StringUtils.isNotEmpty(cell.getText())) {
+        for (int cellPos = 0; cellPos < row.numCells(); cellPos++) {
+            TableCell cell = row.getCell(cellPos);
+            if (cell != null && StringUtils.isNotEmpty(cell.text())) {
                 return !isEmpty;
             }
         }
         return isEmpty;
     }
+
+
 }

@@ -139,7 +139,7 @@ public class WD2EUIController {
         fileChooser.setTitle("Select Multiple Word Document Files");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); // Sets initial directory to user's home
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Document Files", "*.docx"),
+                new FileChooser.ExtensionFilter("Document Files", "*.doc", "*.docx"),
                 new FileChooser.ExtensionFilter("All Files", "*.*")
         );
         List<File> docFileList = fileChooser.showOpenMultipleDialog(getStage(event));
