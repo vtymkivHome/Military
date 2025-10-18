@@ -20,6 +20,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,8 +30,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-//@Slf4J
 public class WD2EUIController {
+    private static final Logger logger = LoggerFactory.getLogger(WD2EUIController.class);
     private final ObservableList<File> fileNames = FXCollections.observableArrayList();
     private final StringProperty pathToExcelProp = new SimpleStringProperty("");
     public ProgressBar fxConvertingDocsProgress;
@@ -105,16 +107,23 @@ public class WD2EUIController {
 
         // Optional: Bind a Label to show progress message
         // Label statusLabel = new Label();
-         fxDocNameLbl.textProperty().bind(convertFilesTask.messageProperty());
+        fxDocNameLbl.textProperty().bind(convertFilesTask.messageProperty());
+
         convertFilesTask.setOnSucceeded(event -> {
-            System.out.println("Converting finished successfully!");
+            logger.info("Converting finished successfully!");
             fileNames.removeAll(docFilesToConvert);
             // Unbind the progress property when done
             fxConvertingDocsProgress.progressProperty().unbind();
         });
 
         convertFilesTask.setOnFailed(event -> {
-            System.err.println("Converting failed: " + convertFilesTask.getException().getMessage());
+            Throwable ex = convertFilesTask.getException();
+            logger.error("Converting failed: {}", ex.getMessage());
+
+            // Display a critical error message to the user
+            Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
+            alert.showAndWait();
+
             fxConvertingDocsProgress.progressProperty().unbind();
         });
 
@@ -182,23 +191,19 @@ public class WD2EUIController {
         styledTooltip.setFont(new Font("Arial", 14));
         styledTooltip.setStyle("-fx-background-color: lightblue; -fx-text-fill: darkblue;");
         tgtDocTxt.setTooltip(styledTooltip);
-        //styledButton.setTooltip(styledTooltip);
-
-
     }
 
     private void updateListView(List<File> docFileList) {
         if(CollectionUtils.isNotEmpty(docFileList)) {
-            //TODO: Validate if we already have this doc in list
+            // TODO: Validate if we already have this doc in list
             // Get intersection of documents from list view and selected documents
-            //fileNames.retainAll(docFileList);
             List<File> docListToAdd = new ArrayList<>(docFileList);
             List<File> intersection = docFileList.stream()
                     .filter(fileNames::contains)
                     .distinct()
                     .toList();
             if(CollectionUtils.isNotEmpty(intersection)) {
-                System.out.println("The following documents is already in list: " + intersection);
+                logger.info("The following documents is already in list: {}", intersection);
                 // Remove existing documents in view from list
                 docListToAdd.removeAll(intersection);
                 // Show info message(warning message)
@@ -216,7 +221,7 @@ public class WD2EUIController {
                     .allMatch(file -> file.getName().endsWith(".xlsx"));
             if (allFilesAreAccepted) {
                 List<File> docFileLst = db.getFiles();
-                System.out.println("Dropped files: " + docFileLst);
+                logger.info("Dropped excel file(s): {}", docFileLst);
                 pathToExcelProp.set(docFileLst.getFirst().getAbsolutePath());
                 success = true;
             }
@@ -250,7 +255,7 @@ public class WD2EUIController {
                     .allMatch(file -> file.getName().endsWith(".docx"));
             if (allFilesAreAccepted) {
                 List<File> docFileLst = db.getFiles();
-                System.out.println("Dropped files: " + docFileLst);
+                logger.info("Dropped document files: {}", docFileLst);
                 updateListView(docFileLst);
                 success = true;
             }
@@ -275,30 +280,4 @@ public class WD2EUIController {
         dragEvent.consume();  // Consume the event to prevent propagation
     }
 
-    /*public void onDragExcelDetected(MouseEvent mouseEvent) {
-        Dragboard db = sourceWrdDocListView.startDragAndDrop(TransferMode.ANY);
-        ClipboardContent content = new ClipboardContent();
-
-        // Add data to the Dragboard based on what you want to allow to be dragged
-        if (sourceWrdDocListView.getUserData() instanceof String userData) {
-            if(userData.endsWith("xlsx")) {
-                content.putString(userData);
-            }
-        } else if (sourceWrdDocListView.getUserData() instanceof File file) {
-            // Example: Only allow certain file types to be dragged
-            if (file.getName().endsWith(".xlsx")) {
-                content.putFiles(java.util.Collections.singletonList(file));
-            } else {
-                // If the file type is not allowed, don't start the drag
-                mouseEvent.consume();
-                return;
-            }
-        }
-        db.setContent(content);
-        mouseEvent.consume();
-    }
-
-    public void onDragDocumentsDetected(MouseEvent mouseEvent) {
-
-    }*/
 }

@@ -23,20 +23,20 @@ public class ConvertFileTask extends Task<Void> {
             long allFilesCount = sourceFileList.size();
             long totalFilesConverted = 0;
             String fileName = "";
-            W2ECLI docDevCLI = new W2ECLI();
+            W2ECLI w2ECLI = new W2ECLI();
             try {
                 for (File file : sourceFileList) {
                     fileName = file.getName();
                     updateMessage(fileName);
                     // Convert
-                    docDevCLI.convertDocToExcel(file.getAbsolutePath(), destinationFile, pathToConfig);
+                    w2ECLI.convertDocToExcel(file.getAbsolutePath(), destinationFile, pathToConfig);
                     totalFilesConverted++;
                     updateProgress(totalFilesConverted, allFilesCount);
 
                 }
             }  catch (Exception e) {
-                String errMsg = String.format("Error during converting file %s: %s", fileName, e.getMessage());
-                updateMessage(errMsg);
+                String errMsg = String.format("Error happened during converting file %s: %s", fileName, e.getMessage());
+                updateMessage("Conversion failed!");
                 throw new IllegalArgumentException(errMsg); // Re-throw to handle in onFailed
             }
             updateMessage("Files converting completed!");
