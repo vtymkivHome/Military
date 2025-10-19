@@ -33,6 +33,8 @@ public class WD2EUIController {
     private final StringProperty pathToExcelProp = new SimpleStringProperty("");
     public ProgressBar fxConvertingDocsProgress;
     public Label fxDocNameLbl;
+    private File lastPathWD = null;
+    private File lastPathExcel = null;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -143,21 +145,28 @@ public class WD2EUIController {
     void selectDocuments(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Multiple Word Document Files");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); // Sets initial directory to user's home
+        // Sets initial directory to user's home
+        fileChooser.setInitialDirectory(Objects.requireNonNullElseGet(lastPathWD, () -> new File(W2ESysProp.DEFAULT_DIR_PATH.getPath()))); // Sets initial directory to the latest
         fileChooser.getExtensionFilters().addAll(getExtensionFiltersForDoc());
         List<File> docFileList = fileChooser.showOpenMultipleDialog(getStage(event));
+        if (CollectionUtils.isNotEmpty(docFileList)) {
+            lastPathWD = docFileList.getFirst().getParentFile();
+        }
         updateListView(docFileList);
     }
 
     @FXML
     void selectExcelFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Excel File");
+        fileChooser.setTitle("Select One Excel File");
+        fileChooser.setInitialDirectory(Objects.requireNonNullElseGet(lastPathExcel, () -> new File(W2ESysProp.DEFAULT_DIR_PATH.getPath()))); // Sets initial directory to the latest
+
         fileChooser.getExtensionFilters().addAll(getExtensionFiltersForExcel());
 
         File selectedFile = fileChooser.showOpenDialog(getStage(event));
         if (selectedFile != null) {
             logger.info("Selected file: [{}]", selectedFile.getAbsolutePath());
+            lastPathExcel = selectedFile.getParentFile();
             // Further processing of the selected file
             tgtDocTxt.setText(selectedFile.getAbsolutePath());
         }
