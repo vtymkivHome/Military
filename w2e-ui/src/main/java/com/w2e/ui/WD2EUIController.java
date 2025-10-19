@@ -24,10 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WD2EUIController {
@@ -147,10 +144,7 @@ public class WD2EUIController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Multiple Word Document Files");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); // Sets initial directory to user's home
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Document Files", "*.doc", "*.docx"),
-                new FileChooser.ExtensionFilter("All Files", "*.*")
-        );
+        fileChooser.getExtensionFilters().addAll(getExtensionFiltersForDoc());
         List<File> docFileList = fileChooser.showOpenMultipleDialog(getStage(event));
         updateListView(docFileList);
     }
@@ -158,15 +152,12 @@ public class WD2EUIController {
     @FXML
     void selectExcelFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"),
-                new FileChooser.ExtensionFilter("All Files", "*.*")
-        );
+        fileChooser.setTitle("Select Excel File");
+        fileChooser.getExtensionFilters().addAll(getExtensionFiltersForExcel());
 
         File selectedFile = fileChooser.showOpenDialog(getStage(event));
         if (selectedFile != null) {
-            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+            logger.info("Selected file: [{}]", selectedFile.getAbsolutePath());
             // Further processing of the selected file
             tgtDocTxt.setText(selectedFile.getAbsolutePath());
         }
@@ -203,7 +194,7 @@ public class WD2EUIController {
                     .distinct()
                     .toList();
             if(CollectionUtils.isNotEmpty(intersection)) {
-                logger.info("The following documents is already in list: {}", intersection);
+                logger.info("The following documents is already in list: [{}].", intersection);
                 // Remove existing documents in view from list
                 docListToAdd.removeAll(intersection);
                 // Show info message(warning message)
@@ -217,8 +208,7 @@ public class WD2EUIController {
         boolean success = false;
         // Process the dropped content only if it meets the criteria
         if (db.hasFiles()) {
-            boolean allFilesAreAccepted = db.getFiles().stream()
-                    .allMatch(file -> file.getName().endsWith(".xlsx"));
+            boolean allFilesAreAccepted = isAllExcelFilesAccepted(db.getFiles());
             if (allFilesAreAccepted) {
                 List<File> docFileLst = db.getFiles();
                 logger.info("Dropped excel file(s): {}", docFileLst);
@@ -236,8 +226,7 @@ public class WD2EUIController {
         // Filter based on the content of the Dragboard
         if (db.hasFiles()) {
             // Filter based on file extensions
-            boolean allFilesAreAccepted = db.getFiles().stream()
-                    .allMatch(file -> file.getName().endsWith(".xlsx") );
+            boolean allFilesAreAccepted = isAllExcelFilesAccepted(db.getFiles());
             if (allFilesAreAccepted) {
                 dragEvent.acceptTransferModes(TransferMode.COPY);
             }
@@ -251,8 +240,7 @@ public class WD2EUIController {
         boolean success = false;
         // Process the dropped content only if it meets the criteria
         if (db.hasFiles()) {
-            boolean allFilesAreAccepted = db.getFiles().stream()
-                    .allMatch(file -> file.getName().endsWith(".docx"));
+            boolean allFilesAreAccepted = isAllDocFilesAccepted(db.getFiles());
             if (allFilesAreAccepted) {
                 List<File> docFileLst = db.getFiles();
                 logger.info("Dropped document files: {}", docFileLst);
@@ -271,8 +259,7 @@ public class WD2EUIController {
         // Filter based on the content of the Dragboard
         if (db.hasFiles()) {
             // Filter based on file extensions
-            boolean allFilesAreAccepted = db.getFiles().stream()
-                    .allMatch(file -> file.getName().endsWith(".docx") );
+            boolean allFilesAreAccepted = isAllDocFilesAccepted(db.getFiles());
             if (allFilesAreAccepted) {
                 dragEvent.acceptTransferModes(TransferMode.COPY);
             }
@@ -280,4 +267,22 @@ public class WD2EUIController {
         dragEvent.consume();  // Consume the event to prevent propagation
     }
 
+    private boolean isAllDocFilesAccepted(List<File> fileList) {
+        return fileList.stream()
+                .allMatch(file -> file.getName().endsWith(".docx") || file.getName().endsWith(".doc"));
+    }
+
+    private boolean isAllExcelFilesAccepted(List<File> fileList) {
+        return fileList.stream()
+                .allMatch(file -> file.getName().endsWith(".xlsx"));
+    }
+
+    private List<FileChooser.ExtensionFilter> getExtensionFiltersForDoc() {
+        return List.of(new FileChooser.ExtensionFilter("Document Files", "*.doc", "*.docx")/*,
+                new FileChooser.ExtensionFilter("All Files", "*.*")*/);
+    }
+
+    private Collection<FileChooser.ExtensionFilter> getExtensionFiltersForExcel() {
+        return List.of(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+    }
 }
