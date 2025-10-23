@@ -7,10 +7,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class WD2EUI extends Application {
+public class W2EUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(WD2EUI.class.getResource("w2e.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(W2EUI.class.getResource("w2e.fxml"));
         //FXMLLoader fxmlLoader = new FXMLLoader(WD2EUI.class.getResource("src/main/resources/com.w2e/w2e.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Convert word document into excel.");

@@ -27,8 +27,8 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class WD2EUIController {
-    private static final Logger logger = LoggerFactory.getLogger(WD2EUIController.class);
+public class W2EUIController {
+    private static final Logger logger = LoggerFactory.getLogger(W2EUIController.class);
     private final ObservableList<File> fileNames = FXCollections.observableArrayList();
     private final StringProperty pathToExcelProp = new SimpleStringProperty("");
     public ProgressBar fxConvertingDocsProgress;
